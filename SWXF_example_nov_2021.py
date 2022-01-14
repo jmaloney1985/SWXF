@@ -134,15 +134,25 @@ def swave_a(alpha,z,E):
                    + r*np.exp(-1j*k0*z*np.sin(alpha)))**2
     return I
 
-#%% Section 6 Now make some plots of the standing wave
+# Section 6 Now make some plots of the standing wave
 # Calculate standing wave intensity vs. angle
 plt.figure(1)
 plt.clf()
-z=np. linspace(-20,50,10000)*nano # setup an array of height positions
-alpha = 0.08*degree # incident angle
+z=np.linspace(-20,50,10000)*nano # setup an array of height positions
+alpha = 0.07*degree # incident angle
 
 Itot = swave_z(alpha,z,E)
 plt.plot(z/nano,Itot)
+
+#Generating the second figure to superimpose over the first
+plt.figure(1)
+plt.clf()
+z=np.linspace(-20,50,10000)*nano # setup an array of height positions
+beta = 0.14*degree # second incident angle
+
+Itot_2 = swave_z(beta,z,E) #second intensity
+plt.plot(z/nano,Itot_2) #plot with second intensity
+
 # Put a nanoparticle at a height of 5 nm and
 # calculate fluorescence vs. incident angle.
 
@@ -150,18 +160,30 @@ z_au = 5*nano
 plt.figure(1)
 plt.clf()
 plt.plot(z/nano,Itot)
+plt.plot(z/nano,Itot_2) #Introducing the second plot to superimpose over the first
 plt.plot(np.array([z_au,z_au])/nano,np.array([0,4]),'--r')
-plt.xlabel('height above surface (nm)')
+plt.xlabel('Height Above Surface (nm)')
 plt.ylabel('$I/I_0$')
-plt.title('Standing wave amplitude for {0:2.0f} KeV wave above Si surface at {1:3.2f} deg'.format(
-    E/1000,alpha/degree))
-# second plot calculate fluorescence yeild vs. angle
+plt.title('XSW Amplitude For 12 KeV Wave Above Si Surface at Varying Degrees')
+plt.legend(["0.07" + u'\N{DEGREE SIGN}', "0.14" + u'\N{DEGREE SIGN}'], loc ="lower right")
+plt.show()
+
+# second plot calculating fluorescence yield vs. angle
+z_au = 5*nano
+z_au2 = 10*nano #second height
 alpha = np.linspace(0.01,2,1000)*degree
 Iz = swave_a(alpha,z_au,E)
-fyeild = Iz*sig_a*S_N*I0/np.abs(alpha)
+Iz2 = swave_a(alpha,z_au2,E) #second intensity using second height
+fyield = Iz*sig_a*S_N*I0/np.abs(alpha)
+fyield2 = Iz2*sig_a*S_N*I0/np.abs(alpha) #second fluorescent yield using second intensity
+
 plt.figure(2)
 plt.clf()
-plt.plot(alpha/degree,fyeild)
-plt.xlabel('incident angle [deg]')
-plt.ylabel('Fluorescence yield')
-plt.title('Au nanoparticle at height z = 5 nm')
+plt.plot(alpha/degree,fyield)
+plt.plot(alpha/degree,fyield2) #Introducing the second plot to superimpose over the first
+plt.xlabel('Incident Angle (Degrees)')
+plt.ylabel('Fluorescence Yield')
+plt.title('Au Nanoparticle at Varying Heights')
+plt.legend(["5 nm", "10 nm"], loc ="lower right")
+plt.xlim(0,0.5)
+plt.show()
